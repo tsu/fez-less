@@ -1,5 +1,5 @@
 var Parser = less = require("less").Parser,
-    Promise = require("promise");
+    Promise = require("bluebird");
 
 module.exports = function(options) {
   var parser = new Parser(options);
