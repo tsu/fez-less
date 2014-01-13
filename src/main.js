@@ -1,22 +1,24 @@
-var Parser = less = require("less").Parser,
-    Promise = require("bluebird");
+var Parser = require("less").Parser,
+Promise = require("bluebird");
 
 module.exports = function(options) {
   var parser = new Parser(options);
+  Promise.promisifyAll(parser);
 
-  function lessp(p) {
-    return p.then(function(input){ 
-      return new Promise(function(resolve, reject) {
-	parser.parse(input.toString(), function (err, tree) { 
-	  if(err) reject(err); 
-	  else resolve(tree.toCSS()); 
-	});
-      });
+  function lessp(input) {
+    return input.asBuffer().then(function(b) {
+      var d = Promise.defer();
+      parser.parse(b.toString(), d.callback);
+      return d.promise;
+    }).then(function(parsed) {
+      return parsed.toCSS();
     });
-  };
+  }
 
   return function(inputs) {
-    return Promise.all(inputs.map(function(input) { return input.asBuffer(); }).map(lessp)).then(function(css) { return css.join(""); });
+    return Promise.all(inputs.map(lessp)).then(function(css) { 
+      return css.join(""); 
+    });
   };
 };
 
