@@ -1,6 +1,6 @@
 {
   "name": "fez-less",
-  "version": "0.1.0",
+  "version": "0.1.1pre",
   "main": "src/main.js",
   "dependencies": {
     "bluebird": "~0.11.6-0",
