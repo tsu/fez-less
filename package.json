@@ -5,7 +5,8 @@
   "dependencies": {
     "bluebird": "~0.11.6-0",
     "less": "~1.6.0",
-    "xtend": "~2.1.2"
+    "xtend": "~2.1.2",
+    "is-promise": "~1.0.0"
   },
   "devDependencies": {
     "tape": "~2.3.2",

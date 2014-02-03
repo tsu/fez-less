@@ -1,4 +1,5 @@
 var Parser = require("less").Parser,
+    isPromise = require("is-promise"),
     Promise = require("bluebird"),
     xtend = require("xtend"),
     fs = require("fs"),
@@ -35,23 +36,26 @@ module.exports = function(options) {
   };
 };
 
-module.exports.imports = function(file, options) {
-  var parser = new Parser(xtend({ paths: [path.dirname(file)] }, options));
-
-  return new Promise(function(resolve, reject) {
-    fs.readFile(file, function(err, data) {
-      if(err) reject(err);
-      else parser.parse(data.toString(), function(err, tree) {
-        if(err) { 
-          reject(err); 
-        } else {
-          var result = [];
-          tree.rules.forEach(function(rule) {
-            if(rule.importedFilename) result.push(rule.importedFilename);
+module.exports.imports = function(magicFile) {
+  return function() {
+    var file = magicFile.inspect();
+    return file.asBuffer().then(function(data) {
+      return file.getFilename().then(function(name) {
+        return new Promise(function(resolve, reject) {
+               var parser = new Parser(xtend({ paths: [path.dirname(name)] }));
+          parser.parse(data.toString(), function(err, tree) {
+            if(err) { 
+              reject(err); 
+            } else {
+              var result = [];
+              tree.rules.forEach(function(rule) {
+                if(rule.importedFilename) result.push(rule.importedFilename);
+              });
+              resolve(result);
+            }
           });
-          resolve(result);
-        }
+        });
       });
     });
-  });
+  };
 };
