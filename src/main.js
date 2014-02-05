@@ -24,15 +24,7 @@ module.exports = function(options) {
   }
 
   return function less(inputs) {
-    if(options.main) {
-      inputs = inputs.filter(function(i) {
-        return i.getFilename() === options.main;
-      });
-    }
-
-    return Promise.all(inputs.map(lessp)).then(function(css) { 
-      return css.join(""); 
-    });
+    return lessp(inputs.primary);
   };
 };
 
