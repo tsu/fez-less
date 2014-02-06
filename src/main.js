@@ -24,7 +24,9 @@ module.exports = function(options) {
   }
 
   return function less(inputs) {
-    return lessp(inputs.primary);
+    return Promise.all(inputs.map(lessp)).then(function(css) { 
+      return css.join(""); 
+    });
   };
 };
 
