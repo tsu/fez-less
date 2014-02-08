@@ -3,7 +3,7 @@
   "version": "0.1.2",
   "main": "src/main.js",
   "dependencies": {
-    "bluebird": "~0.11.6-0",
+    "bluebird": "~1.0.3",
     "less": "~1.6.0",
     "xtend": "~2.1.2",
     "is-promise": "~1.0.0"

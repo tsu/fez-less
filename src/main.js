@@ -34,20 +34,18 @@ module.exports.imports = function(magicFile) {
   return function() {
     var file = magicFile.inspect();
     return file.asBuffer().then(function(data) {
-      return file.getFilename().then(function(name) {
-        return new Promise(function(resolve, reject) {
-               var parser = new Parser(xtend({ paths: [path.dirname(name)] }));
-          parser.parse(data.toString(), function(err, tree) {
-            if(err) { 
-              reject(err); 
-            } else {
-              var result = [];
-              tree.rules.forEach(function(rule) {
-                if(rule.importedFilename) result.push(rule.importedFilename);
-              });
-              resolve(result);
-            }
-          });
+      return new Promise(function(resolve, reject) {
+        var parser = new Parser(xtend({ paths: [path.dirname(file.getFilename())] }));
+        parser.parse(data.toString(), function(err, tree) {
+          if(err) { 
+            reject(err); 
+          } else {
+            resolve(tree.rules.filter(function(rule) {
+              return rule.importedFilename;
+            }).map(function(rule) {
+              return rule.importedFilename;
+            }));
+          }
         });
       });
     });
