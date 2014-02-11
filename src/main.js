@@ -30,9 +30,8 @@ module.exports = function(options) {
   };
 };
 
-module.exports.imports = function(magicFile) {
-  return function() {
-    var file = magicFile.inspect();
+module.exports.imports = function(proxy) {
+  return proxy.map(function(file) {
     return file.asBuffer().then(function(data) {
       return new Promise(function(resolve, reject) {
         var parser = new Parser(xtend({ paths: [path.dirname(file.getFilename())] }));
@@ -49,5 +48,5 @@ module.exports.imports = function(magicFile) {
         });
       });
     });
-  };
+  });
 };
